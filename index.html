@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <span id="thespan"></span>
+    <button id="fetch-toggle-btn">Toggle fetch</button>
+</body>
+<script>
+    const span = document.getElementById('thespan');
+    let interval = setInterval(() => {
+        fetch('http://localhost:8080')
+        .then(response => response.json())
+        .then(data => {
+            span.innerHTML = JSON.stringify(data);
+            document.body.style.backgroundColor = data.color;
+        })
+        .catch(error => {
+            span.innerHTML = error;
+            document.body.style.backgroundColor = 'red';
+        });
+    }, 1000);
+
+    let isFetching = true;
+    document.getElementById('fetch-toggle-btn').addEventListener('click', () => {
+        if (isFetching) {
+            clearInterval(interval);
+            isFetching = false;
+        } else {
+            interval = setInterval(() => {
+                fetch('http://localhost:8080')
+                .then(response => response.json())
+                .then(data => {
+                    span.innerHTML = JSON.stringify(data);
+                    document.body.style.backgroundColor = data.color;
+                })
+                .catch(error => {
+                    span.innerHTML = error;
+                    document.body.style.backgroundColor = 'red';
+                });
+            }, 1000);
+            isFetching = true;
+        }
+    });
+</script>
+</html>
